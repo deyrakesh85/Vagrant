@@ -1,0 +1,32 @@
+Vagrant.configure("2") do |config|
+# The default ubuntu/xenial64 image has issues with vbguest additions
+	config.vm.box = "ubuntu/trusty64"
+
+ # Set memory for the default VM
+	config.vm.provider "virtualbox" do |vb|
+		vb.memory = "1024"
+	end
+
+ # Configure vbguest auto update options
+	#config.vbguest.auto_update = false
+	#config.vbguest.no_install = false
+	#config.vbguest.no_remote = true
+
+ # Configure the hostname for the default machine
+	config.vm.hostname = "ansible-example"
+
+ # Mount this folder as RO in the guest, since it contains secure stuff
+	config.vm.synced_folder "vagrant", "/vagrant", :mount_options => ["ro"]
+
+	#config.vm.provision "shell",
+	#	inline: "sudo rm /var/lib/dpkg/lock && sudo rm /var/lib/apt/lists/lock && sudo rm /var/cache/apt/archives/lock"
+	
+ # And finally run the Ansible local provisioner
+	config.vm.provision "ansible_local" do |ansible|
+		ansible.provisioning_path = "/vagrant/provisioning/ansible-tomcat-ubuntu"
+		ansible.inventory_path = "hosts"
+		ansible.playbook = "site.yml"
+		ansible.limit = "all"
+	end
+
+end

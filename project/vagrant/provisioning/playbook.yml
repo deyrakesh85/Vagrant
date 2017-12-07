@@ -1,0 +1,5 @@
+---
+
+- hosts: ansible-example
+  tasks:
+    - copy: content="IT WORKS!\n" dest=/home/vagrant/ansible_runs
